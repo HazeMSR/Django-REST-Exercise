@@ -3,8 +3,11 @@ services:
   web:
     build: .
     command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
-    container_name: "djangoXX"
+    container_name: "django00"
     volumes:
-      - "/home/YOUR_USER/django/library:/usr/src/django/library"
+    # "RUTA/DEL/SERVIDOR:RUTA/DENTRO/DEL/CONTENEDOR"
+      - "/home/hazel_mtz/django/library:/usr/src/django/library"
     ports:
-      - "90XX:8000"
+    # "PuertoDelServidor:PuertoDelContenedor"
+      - "9000:8000"
+    network_mode: bridge
