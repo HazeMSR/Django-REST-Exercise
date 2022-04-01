@@ -1,10 +1,33 @@
 version: '3'
 services:
+  postgres_db:
+    image: postgres:14-alpine
+    environment:
+      POSTGRES_PASSWORD: "YourUltraSecretPassword#123"
+      POSTGRES_DB: "YOUR_USERNAMEdb"
+      POSTGRES_USER: "YOUR_USERNAME"
+    ports:
+      - "100XX:5432"
+    volumes:
+      - "/home/YOUR_USERNAME/postgres:/usr/src/postgres"
+    networks:
+      - my-app-network
   web:
     build: .
     command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     container_name: "django00"
+    environment:
+      PSQL_DBNAME: "YOUR_USERNAMEdb"
+      PSQL_USERNAME: "YOUR_USERNAME"
+      PSQL_PASS: "YourUltraSecretPassword#123"
+      PSQL_HOST: "localhost"
+      PSQL_PORT: "5432"
     volumes:
-      - "/home/hazel_mtz/django/library:/usr/src/django/library"
+      - "/home/YOUR_USERNAME/django/library:/usr/src/django/library"
     ports:
-      - "9000:8000"
+      - "90XX:8000"
+    networks:
+      - my-app-network
+networks:
+  my-app-network:
+    driver: bridge
