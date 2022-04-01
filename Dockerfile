@@ -6,9 +6,9 @@ ENV PYTHONUNBUFFERED 1
 # create root directory for our project in the container
 RUN mkdir /usr/src/django/
 RUN mkdir /usr/src/django/library
-# Set the working directory to /music_service
+# Set the working directory to /library
 WORKDIR /usr/src/django/library
-# Copy the current directory contents into the container at /music_service
+# Copy the current directory contents into the container at /library
 ADD . /usr/src/django/library
 # Install any needed packages specified in requirements.txt
 RUN pip install -r requirements.txt
