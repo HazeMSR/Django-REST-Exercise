@@ -12,4 +12,4 @@ WORKDIR /usr/src/django/library
 ADD . /usr/src/django/library
 # Install any needed packages specified in requirements.txt
 RUN pip install -r requirements.txt
-EXPOSE 5432
+EXPOSE 5500

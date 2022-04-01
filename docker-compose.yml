@@ -1,13 +1,35 @@
 version: '3'
 services:
+  postgres_db:
+    image: postgres:14-alpine
+    environment:
+      POSTGRES_PASSWORD: "SecretPassword123"
+      POSTGRES_DB: "hazel_mtzdb"
+      POSTGRES_USER: "hazel_mtz"
+    ports:
+      - "10000:5500"
+    volumes:
+      - "/home/hazel_mtz/postgres:/usr/src/postgres"
+    networks:
+      - our-library-net
   web:
     build: .
     command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     container_name: "django00"
+    environment:
+      PSQL_DBNAME: "hazel_mtzdb"
+      PSQL_USERNAME: "hazel_mtz"
+      PSQL_PASS: "SecretPassword123"
+      PSQL_HOST: "localhost"
+      PSQL_PORT: "5500"
     volumes:
     # "RUTA/DEL/SERVIDOR:RUTA/DENTRO/DEL/CONTENEDOR"
       - "/home/hazel_mtz/django/library:/usr/src/django/library"
     ports:
-    # "PuertoDelServidor:PuertoDelContenedor"
       - "9000:8000"
-    network_mode: bridge
+    networks:
+      - our-library-net
+networks:
+  our-library-net:
+    external: true
+    driver: bridge
