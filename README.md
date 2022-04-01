@@ -72,3 +72,5 @@ cd library/editorial
 touch serializers.py urls.py
 ```
 
+## References
+(DB normalization)[https://www.guru99.com/database-normalization.html]
