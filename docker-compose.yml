@@ -3,13 +3,13 @@ services:
   postgres_db:
     image: postgres:14-alpine
     environment:
-      POSTGRES_PASSWORD: "YourUltraSecretPassword#123"
-      POSTGRES_DB: "YOUR_USERNAMEdb"
-      POSTGRES_USER: "YOUR_USERNAME"
+      POSTGRES_PASSWORD: "123World000%"
+      POSTGRES_DB: "hazel_mtzdb"
+      POSTGRES_USER: "hazel_mtz"
     ports:
-      - "100XX:5432"
+      - "10000:5432"
     volumes:
-      - "/home/YOUR_USERNAME/postgres:/usr/src/postgres"
+      - "/home/hazel_mtz/postgres:/usr/src/postgres"
     networks:
       - my-app-network
   web:
@@ -17,15 +17,15 @@ services:
     command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     container_name: "django00"
     environment:
-      PSQL_DBNAME: "YOUR_USERNAMEdb"
-      PSQL_USERNAME: "YOUR_USERNAME"
-      PSQL_PASS: "YourUltraSecretPassword#123"
+      PSQL_DBNAME: "hazel_mtzdb"
+      PSQL_USERNAME: "hazel_mtz"
+      PSQL_PASS: "123World000%"
       PSQL_HOST: "localhost"
       PSQL_PORT: "5432"
     volumes:
-      - "/home/YOUR_USERNAME/django/library:/usr/src/django/library"
+      - "/home/hazel_mtz/django/library:/usr/src/django/library"
     ports:
-      - "90XX:8000"
+      - "9000:8000"
     networks:
       - my-app-network
 networks:
