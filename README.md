@@ -88,7 +88,7 @@ docker ps | grep YOUR_PORT
 
 # Once you grep some instance with your related port, copy the ID 
 # and paste it on the next command
-docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}} YOUR_CONTAINER_ID
+docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' YOUR_CONTAINER_ID
 ```
 Then we need to use that IP address in our docker-compose.yml because it corresponds to the IP address of our Docker network.
 
