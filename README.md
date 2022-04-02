@@ -99,7 +99,7 @@ Then we need to use that IP address in our docker-compose.yml because it corresp
 - Tip: If you got some issues to send your Http Request you should check out the Django and Django REST Frameworkd documentation.
 
 ## References
-(DB normalization)[https://www.guru99.com/database-normalization.html]
-(Django documentation)[https://docs.djangoproject.com/en/4.0/]
-(Django REST Framework)[https://www.django-rest-framework.org/#example]
-(HTTP methods example)[https://www.bezkoder.com/django-rest-api/]
+- (DB normalization)[https://www.guru99.com/database-normalization.html]
+- (Django documentation)[https://docs.djangoproject.com/en/4.0/]
+- (Django REST Framework)[https://www.django-rest-framework.org/#example]
+- (HTTP methods example)[https://www.bezkoder.com/django-rest-api/]
