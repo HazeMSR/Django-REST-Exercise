@@ -73,7 +73,7 @@ touch serializers.py urls.py
 ```
 
 ## Solving your issues
-- Issue #1 Running docker-compose up Shows database found skipping initial configuration: Postgres images runs some configuration only the first time we build and run our container. In order for solving this issue we must stop our current container with CTRL C, then enter following commands:
+- Issue #1 Running docker-compose up shows "Database found: skipping initial configuration": Postgres images runs some configuration only the first time we build and run our container. In order for solving this issue we must stop our current container with CTRL C, then enter following commands:
 ```
 docker-compose rm web
 docker-compose rm postgres_db
