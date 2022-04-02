@@ -93,7 +93,7 @@ docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' YOUR
 Then we need to use that IP address in our docker-compose.yml because it corresponds to the IP address of our Docker network.
 
 ## Assignment
-1. Add between 2-4 models, obviously make their serializers, views and routers also; you can do it inside tour book application (Our you can create another app inside our project with the command ```django-admin startapp your_app_name```).
+1. Add between 2-4 models, obviously make their serializers, views and routers also; you can do it inside your book application (Our you can create another app inside our project with the command ```django-admin startapp your_app_name```).
 2. Populate your book app and also your new models.
 3. Try your application with Postman (Do every HTTP method of every Model in our project: GET, POST, PUT DELETE and PATCH).
 - Tip: If you got some issues to send your Http Request you should check out the Django and Django REST Frameworkd documentation.
