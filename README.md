@@ -19,12 +19,12 @@ version: '3'
 services:
   web:
     build: .
-    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:80XX"
     container_name: "djangoXX"
     volumes:
       - "/home/YOUR_USER/django/library:/usr/src/django/library"
     ports:
-      - "90XX:8000"
+      - "90XX:80XX"
 ``` 
 2. Using docker-compose in order to deploy your container:
 > docker-compose up
@@ -73,7 +73,7 @@ touch serializers.py urls.py
 ```
 
 ## Solving your issues
-- Issue #1 Running docker-compose up Shows database found skipping initial configuration: Postgres images configuration only run some essential configuration the first we build and run our container. In order for solving this issue we must stop our current container with CTRL C, then enter following commands:
+- Issue #1 Running docker-compose up Shows database found skipping initial configuration: Postgres images runs some configuration only the first time we build and run our container. In order for solving this issue we must stop our current container with CTRL C, then enter following commands:
 ```
 docker-compose rm web
 docker-compose rm postgres_db
