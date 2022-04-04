@@ -30,7 +30,6 @@ services:
       - "PSQL_HOST=172.24.0.5" # You must use the command of the README.md file in order to get this IP address
       - "PSQL_PORT=55XX"
     volumes:
-    # "RUTA/DEL/SERVIDOR:RUTA/DENTRO/DEL/CONTENEDOR"
       - "YOUR_REPOSITORY_PATH:/usr/src/django/library"
     ports:
       - "90XX:80XX"
