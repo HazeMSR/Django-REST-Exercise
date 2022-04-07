@@ -1,38 +1,38 @@
 version: '3'
 services:
-  # DON'T FORGET TO CHANGE THE XX WITH YOUR PORT
-  # YOUR_USER WITH YOUR UNIX USER
   postgres_db:
     image: postgres:14-alpine
-    container_name: "postgresXX"
+    container_name: "postgres44"
     environment:
-      - "POSTGRES_PASSWORD=YourUltraSecretPassword123"
-      - "POSTGRES_DB=YOUR_USER_db"
-      - "POSTGRES_USER=YOUR_USER"
+      - "POSTGRES_PASSWORD=SecretPassword123"
+      - "POSTGRES_DB=hazel_mtzdb"
+      - "POSTGRES_USER=hazel_mtz"
     ports:
-      - "100XX:55XX"
+      - "10000:5500"
+      - "10044:5544"
     volumes:
-      - "/home/YOUR_USER/postgres:/usr/src/postgres"
+      - "/home/hazel_mtz/postgres:/usr/src/postgres"
     networks:
       - our-library-net
-    command: -p 55XX
+    command: -p 5544
 
   web:
     build: .
-    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:80XX"
-    container_name: "djangoXX"
+    command: bash -c "python manage.py makemigrations && python manage.py migrate &&  python manage.py runserver 0.0.0.0:8044"
+    container_name: "django44"
     depends_on: 
       - postgres_db
     environment:
-      - "PSQL_DBNAME=YOUR_USER_db"
-      - "PSQL_USERNAME=YOUR_USER"
+      - "PSQL_DBNAME=hazel_mtzdb"
+      - "PSQL_USERNAME=hazel_mtz"
       - "PSQL_PASS=SecretPassword123"
-      - "PSQL_HOST=172.24.0.5" # You must use the command of the README.md file in order to get this IP address
-      - "PSQL_PORT=55XX"
+      - "PSQL_HOST=172.24.0.23" # You must use the previous command in order to get this HOST
+      - "PSQL_PORT=5544"
     volumes:
-      - "YOUR_REPOSITORY_PATH:/usr/src/django/library"
+    # "RUTA/DEL/SERVIDOR:RUTA/DENTRO/DEL/CONTENEDOR"
+      - "/home/hazel_mtz/django/library:/usr/src/django/library"
     ports:
-      - "90XX:80XX"
+      - "9044:8044"
     networks:
       - our-library-net
 

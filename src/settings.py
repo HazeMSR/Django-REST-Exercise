@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     #'corsheaders',
     'drf_yasg',
     'rest_framework',
-    'library.editorial',
+    #'library.editorial',
     'library.users',
     'library.books',
 ]

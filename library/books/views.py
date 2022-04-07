@@ -1,6 +1,6 @@
 from rest_framework import viewsets
 from rest_framework import permissions
-from books.serializers import *
+from library.books.serializers import *
 
 class AuthorViewSet(viewsets.ModelViewSet):
     queryset = Author.objects.all().order_by('name')
