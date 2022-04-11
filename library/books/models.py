@@ -19,3 +19,6 @@ class Book(models.Model):
 class BooksAuthors(models.Model):
 	book = models.ForeignKey(Book, related_name='BookWithAuthors', on_delete=models.DO_NOTHING)
 	author = models.ForeignKey(Author, related_name='AuthorWithBooks', on_delete=models.DO_NOTHING)
+
+	def __str__(self):
+		return f'{self.id}'
