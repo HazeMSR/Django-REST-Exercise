@@ -6,7 +6,23 @@ import pytest
 # session 	Run once per session
 
 def test_one():
-	assert 1 == 1
+	var1 = 1
+	print('Var1:',var1)
+	assert var1 is not 2
+
+@pytest.mark.parametrize(
+	'val1, val2, result',
+	(
+		(1,2,3),
+		(40,20,60),
+		(10,10,20),
+		(7,83,90)
+	)
+)
+def test_sum(val1, val2, result):
+	print('Sum:',(val1+val2))
+	assert val1 + val2 == result
+
 
 @pytest.fixture
 def fixture_per_func():

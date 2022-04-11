@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 def test_user_create():
 	user = User.objects.create_user('test', 'test@test.com', 'test')
 	count = User.objects.all().count()
-	print(count)
+	print('Your current count is:', count)
 	assert User.objects.count() == 1
 	user.delete()
 
@@ -21,10 +21,11 @@ def user_1(db):
 	return User.objects.create_user('test-user')
 
 @pytest.mark.django_db
-def test_set_check_password(user_1):
-	user_1.set_password('new-password')
-	assert user_1.check_password('new-password') is True
-	user_1.delete()
+def test_set_check_password(user_2):
+	user_2.set_password('new-password')
+	print('This is my user name:',user_2)
+	assert user_2.check_password('new-password') is True
+	user_2.delete()
 
 def test_new_user(new_user):
 	print(new_user.first_name)
