@@ -21,8 +21,9 @@ def test_author_name(nombre, apellido):
 
 @pytest.mark.django_db
 def test_author_with_monkey(monkeypatch):
-	from django.db.models.query import QuerySet
+
 	author = Author.objects.create(name='nombre', last_name='apellido')
+	
 	class AuthorQuerysetMock():
 		def __init__(self):
 			self.some_value=1
@@ -34,5 +35,6 @@ def test_author_with_monkey(monkeypatch):
 		return AuthorQuerysetMock()
 
 	monkeypatch.setattr(Author.objects, 'all', model_count_mock)
+
 	assert Author.objects.all().count() == 4
 	print('Haciendo el monkeypatch')
