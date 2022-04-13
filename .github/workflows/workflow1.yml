@@ -21,10 +21,7 @@ jobs:
 #        id: buildx
 #        with:
 #          install: true
-      - name: Install docker compose   
-        uses: KengoTODA/actions-setup-docker-compose@main
-        with: 
-          version: '3' # Version of docker compose
+
       - name: Build django image
         run: |
             docker build -t my-django-image44:2.0.0 .
