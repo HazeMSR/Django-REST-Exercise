@@ -10,7 +10,7 @@ services:
     ports:
       - "10044:5544"
     volumes:
-      - "${POSTGRESLA_VOLUME_PATH}:/usr/src/postgres"
+      - "${POSTGRES_VOLUME_PATH}:/usr/src/postgres"
     networks:
       - our-library-net
     command: -p 5544
