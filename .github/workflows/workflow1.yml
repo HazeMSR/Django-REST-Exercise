@@ -22,7 +22,7 @@ jobs:
 #        with:
 #          install: true
       - name: Install docker compose   
-        uses: KengoTODA/actions-setup-docker-compose
+        uses: KengoTODA/actions-setup-docker-compose@main
         with: 
           version: '3' # Version of docker compose
       - name: Build django image
