@@ -21,7 +21,7 @@ jobs:
           docker network create -d bridge our-library-net
       - name: Build django image
         run: |
-            docker build -t my-django-image44:2.0.0 .
+          docker build -t my-django-image44:2.0.0 .
       - name: Run docker containers
         run: |
-            docker-compose up --build
+          docker-compose up --env-file .env.stg --build
