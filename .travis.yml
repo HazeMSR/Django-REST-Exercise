@@ -1,0 +1,21 @@
+language: ruby
+env:
+  DOCKER_COMPOSE_VERSION: 3
+
+services:
+  - docker
+
+before_install:
+  - sudo apt-get update
+  # Some configuration ir order to force docker compose install
+  - sudo apt-get install -o Dpkg::Options::="--force-confold" --force-yes -y docker-engine
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+  - docker-compose --version
+  - docker network create -d bridge our-library-net
+  - docker build -t my-django-image44:2.0.0 .
+
+script:
+  - docker-compose up --env-file .env.stg --build
