@@ -1,5 +1,5 @@
 # Django-and-Django-REST-Framework
-
+[![Build Status](https://app.travis-ci.com/HazeMSR/Django-REST-Exercise.svg?branch=main)](https://app.travis-ci.com/HazeMSR/Django-REST-Exercise)
 ## Setup
 ### Installing docker compose
 
