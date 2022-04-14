@@ -2,36 +2,37 @@ version: '3'
 services:
   postgres_db44:
     image: postgres:14-alpine
-    container_name: "postgres44"
+    container_name: "postgres${PORT}"
     environment:
-      - "POSTGRES_PASSWORD=SecretPassword123"
-      - "POSTGRES_DB=hazel_mtzdb"
-      - "POSTGRES_USER=hazel_mtz"
+      - "POSTGRES_PASSWORD=${PSQL_PASS}"
+      - "POSTGRES_DB=${PSQL_DB}"
+      - "POSTGRES_USER=${PSQL_USER}"
     ports:
-      - "10044:5544"
+      - "100${PORT}:55${PORT}"
     volumes:
       - "${POSTGRES_VOLUME_PATH}:/usr/src/postgres"
     networks:
       - our-library-net
-    command: -p 5544
+    command: "-p 55${PORT}"
 
   web44:
     build: .
-    command: bash -c "python manage.py makemigrations && python manage.py migrate && pytest && python manage.py runserver 0.0.0.0:8044"
-    container_name: "django44"
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && pytest && python manage.py runserver 0.0.0.0:80${PORT}"
+    container_name: "django${PORT}"
     depends_on: 
       - postgres_db44
     environment:
-      - "PSQL_DBNAME=hazel_mtzdb"
-      - "PSQL_USERNAME=hazel_mtz"
-      - "PSQL_PASS=SecretPassword123"
-      - "PSQL_HOST=postgres_db44" # You must use the previous command in order to get this HOST
-      - "PSQL_PORT=5544"
+      - "PSQL_DBNAME=${PSQL_DB}"
+      - "PSQL_USERNAME=${PSQL_USER}"
+      - "PSQL_PASS=${PSQL_PASS}"
+      - "PSQL_HOST=postgres_db${PORT}" # You must use the previous command in order to get this HOST
+      - "PSQL_PORT=55${PORT}"
+      - "JWT_TOKEN_TIME=${JWT_TOKEN_TIME}"
     volumes:
     # "RUTA/DEL/SERVIDOR:RUTA/DENTRO/DEL/CONTENEDOR"
       - "${DJANGO_VOLUME_PATH}:/usr/src/django/library"
     ports:
-      - "9044:8044"
+      - "90${PORT}:80${PORT}"
     networks:
       - our-library-net
 networks:

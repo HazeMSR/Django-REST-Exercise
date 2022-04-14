@@ -1,4 +1,4 @@
-name: Django Test with PostgreSQL Example
+name: Deploying docker containers of django and postgres
 
 on:
     workflow_call:
@@ -24,4 +24,4 @@ jobs:
           docker build -t my-django-image44:2.0.0 .
       - name: Run docker containers
         run: |
-          docker-compose up --env-file .env.stg --build
+          docker-compose --env-file .env.stg up --build

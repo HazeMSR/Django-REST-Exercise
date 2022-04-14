@@ -18,4 +18,4 @@ before_install:
   - docker build -t my-django-image44:2.0.0 .
 
 script:
-  - docker-compose up --env-file .env.stg --build
+  - docker-compose --env-file .env.stg up -d postgres_db44 && docker-compose --env-file .env.stg up -d web44
