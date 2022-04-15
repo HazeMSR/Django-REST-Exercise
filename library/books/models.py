@@ -1,5 +1,12 @@
 from django.db import models
 
+class Library(models.Model):
+	name = models.CharField(max_length=128)
+
+class Employee(models.Model):
+	name = models.CharField(max_length=128)
+	library = models.ForeignKey(Library, related_name='employees', on_delete=models.CASCADE)
+
 class Thing(models.Model):
 	name = models.CharField(max_length=128)
 	image = models.TextField(null=False)
@@ -18,6 +25,8 @@ class Book(models.Model):
 	updated_at = models.DateTimeField(auto_now=True,null=True)
 	authors = models.ManyToManyField(Author, through='BooksAuthors')
 	# books_authors = models.OneToOneField(Author, through='BookAuthor')
+
+	updated_at = models.DateTimeField(auto_now=True,null=True)
 
 # class BookAuthor(models.Model):
 class BooksAuthors(models.Model):
