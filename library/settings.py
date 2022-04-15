@@ -29,19 +29,6 @@ ALLOWED_HOSTS = ['*']
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 
-AUTH_USER_MODEL = 'auth.User'
-
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "corsheaders.middleware.CorsMiddleware",
-]
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -73,6 +60,9 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'library.urls'
+
+# Changes
+AUTH_USER_MODEL = 'users.User'
 
 TEMPLATES = [
     {

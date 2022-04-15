@@ -1,4 +1,7 @@
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group
+# Changes
+from library.users.models import User
+
 from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.generics import GenericAPIView
@@ -33,14 +36,16 @@ class LoginView(APIView):
 
         response.data = {
             'id': user.id,
-            'email': user.email
+            'email': user.email,
+            #changes
+            'type': user.type
         }
         return response
 
 class LogoutView(GenericAPIView):
     serializer_class = RefreshTokenSerializer
     permission_classes = (permissions.IsAuthenticated, )
-
+    
     def post(self, request, *args):
         sz = self.get_serializer(data=request.data)
         sz.is_valid(raise_exception=True)

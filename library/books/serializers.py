@@ -1,6 +1,11 @@
 from rest_framework import serializers
 from .models import *
 
+class ThingSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Thing
+		fields = ['id', 'name', 'image']
+
 class AuthorSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Author
