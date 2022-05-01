@@ -82,6 +82,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'library.wsgi.application'
 
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": 'redis://' + env.get('REDIS_HOST') + \
+        ':' + env.get('REDIS_PORT') + '/0',
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
@@ -105,7 +115,9 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         #'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
         
-    ]
+    ],
+    #'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    #'PAGE_SIZE': 10,
 }
 from datetime import timedelta
 SIMPLE_JWT = {

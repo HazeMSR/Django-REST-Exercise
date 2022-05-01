@@ -5,23 +5,16 @@ from library.books.serializers import *
 import base64
 from rest_framework.response import Response
 from rest_framework.parsers import FormParser, FileUploadParser, MultiPartParser, JSONParser
+from rest_framework import pagination
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 
-# class ThingView(views.APIView):
-#     parser_classes = (JSONParser, FormParser, MultiPartParser,)
+class CustomPagination(pagination.PageNumberPagination):
+    page_size = 2
+    page_size_query_param = 'page_size'
+    max_page_size = 10
+    page_query_param = 'p'
 
-#     def post(self, request):
-#         name = request.data['name']
-#         image = request.data['image']
-#         sz = ThingSerializer(data=request.data)
-#         print('SERIALIZER',sz)
-#         response = Response()
-#         response.data = {
-#             'name': name,
-#             #'image':
-#         }
-#         return response
-
-#     permission_classes = []
 class LibraryViewSet(viewsets.ModelViewSet):
     queryset = Library.objects.all().order_by('id')
     serializer_class = LibrarySerializer
@@ -54,11 +47,25 @@ class ThingViewSet(viewsets.ModelViewSet):
     queryset = Thing.objects.all().order_by('id')
     serializer_class = ThingSerializer
     permission_classes = []
-
+    
+@method_decorator(cache_page(60*60), name='dispatch')
 class AuthorViewSet(viewsets.ModelViewSet):
     queryset = Author.objects.all().order_by('name')
     serializer_class = AuthorSerializer
     permission_classes = []
+    pagination_class = CustomPagination
+    
+    def create(self, request):
+        print('Self:',dir(self))
+        print('Request:',dir(request))
+        print('self.options: ',self.options)
+        print('self.settings: ',self.settings)
+        print('self.setup: ',self.setup)
+        print('self.kwargs: ',self.kwargs)
+        print('self.args: ',self.args)
+        print('self.post: ',self.post)
+        print('request.post: ',request.POST)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all().order_by('name')
