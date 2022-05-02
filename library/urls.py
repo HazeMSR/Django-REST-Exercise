@@ -10,11 +10,16 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
+from graphene_django.views import GraphQLView
+from django.views.decorators.csrf import csrf_exempt
 
-#from library.views import CustomTokenObtainPairView
+# GRAPHQL URLs
+urlpatterns = [
+    path('graphql', csrf_exempt(GraphQLView.as_view(graphiql=True))),
+]
 
 # JWT URLs
-urlpatterns = [
+urlpatterns += [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ] 
@@ -26,7 +31,6 @@ urlpatterns += [
     path('users/', include('library.users.urls')),
     path('books/', include('library.books.urls')),
 ]
-
 
 # Swagger URLs
 schema_view = get_schema_view(
