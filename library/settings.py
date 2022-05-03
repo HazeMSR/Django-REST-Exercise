@@ -14,6 +14,26 @@ from pathlib import Path
 import django
 from django.utils.encoding import force_str
 django.utils.encoding.force_text = force_str
+from django.contrib.auth import get_user_model
+
+def my_authentication(request, **kwargs):
+    from graphql_jwt.utils import get_payload, get_user_by_payload
+
+    # JWT VALIDATION
+    token=request.COOKIES['JWT']
+    payload = get_payload(token, request)
+    user = get_user_by_payload(payload)
+
+    if 'username' in kwargs:
+        user = get_user_model().objects.get(username=kwargs['username'])
+    
+    if 'password' in kwargs:
+        if user.password == kwargs['password']:
+            return user
+    return user
+
+django.contrib.auth.authenticate = my_authentication
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -46,6 +66,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
+    'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
     'graphene_django',
     'library.editorial',
     'library.users',
@@ -178,5 +199,23 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 GRAPHENE = {
-    'SCHEMA': 'library.books.schema.schema'
+    'SCHEMA': 'library.schema.schema',
+    'MIDDLEWARE': [
+        'graphql_jwt.middleware.JSONWebTokenMiddleware',
+    ],
 }
+AUTHENTICATION_BACKENDS = [
+    "graphql_jwt.backends.JSONWebTokenBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
+
+GRAPHQL_JWT = {
+    "JWT_VERIFY_EXPIRATION": True,
+    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
+    "JWT_EXPIRATION_DELTA": timedelta(minutes=int(env.get('JWT_TOKEN_TIME'))),
+    "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=1),
+}
+
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.ScryptPasswordHasher'
+]

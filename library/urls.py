@@ -12,10 +12,11 @@ from rest_framework_simplejwt.views import (
 
 from graphene_django.views import GraphQLView
 from django.views.decorators.csrf import csrf_exempt
+from graphql_jwt.decorators import jwt_cookie
 
 # GRAPHQL URLs
 urlpatterns = [
-    path('graphql', csrf_exempt(GraphQLView.as_view(graphiql=True))),
+    path('graphql', jwt_cookie(csrf_exempt(GraphQLView.as_view(graphiql=True)))),
 ]
 
 # JWT URLs

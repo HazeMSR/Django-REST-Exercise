@@ -14,12 +14,35 @@ class BookType(DjangoObjectType):
 		fields = '__all__'
 
 class BookQuery(graphene.ObjectType):
-	all_authors = graphene.List(AuthorType)
+
+	
+	all_authors = graphene.List(AuthorType, first=graphene.Int(), skip=graphene.Int())
 	book_by_name = graphene.Field(BookType, name=graphene.String(required=True))
 	#books_by_author_id = graphene.List(AuthorsType, author_id=graphene.Int(required=True))
 
-	def resolve_all_authors(root, info):
-		return Author.objects.all()
+	def resolve_all_authors(root, info, first = None, skip = None):
+		from django.contrib.auth.middleware import get_user
+		from graphql_jwt.utils import get_payload, get_user_by_payload
+
+		context = info.context
+
+		print('info',dir(context))
+		#print('GET_USER:', get_user(info))
+		
+		user = info.context.user
+		#print('USER INFO:', user)
+		print('IS AUTHENTICATED? ', user.is_authenticated)
+		
+		if not user.is_authenticated:
+			raise Exception("Authentication credentials were not provided")
+
+		authors = Author.objects.all()
+		if skip is not None:
+			authors = authors[:skip]
+		if first is not None:
+			authors = authors[first:]
+
+		return authors
 
 	def resolve_book_by_name(root, info, name):
 		try:
@@ -36,15 +59,19 @@ class UpsertAuthorMutation(graphene.Mutation):
 
 	# The class attributes define the response of the mutation
 	author = graphene.Field(AuthorType)
+	status = graphene.String()
 
 	@classmethod
 	def mutate(cls, root, info, name, last_name, id = None):
 		author = None
 		if id is not None:
-			author = Author.objects.get(pk=id)
-			author.name = name
-			author.last_name = last_name
-			author.save()
+			try:
+				author = Author.objects.get(pk=id)
+				author.name = name
+				author.last_name = last_name
+				author.save()
+			except Author.DoesNotExist:
+				return cls( book = None, status = 'Author not found')
 		else:
 			author = Author.objects.create(name=name, last_name=last_name)
 			author.save()
@@ -63,10 +90,15 @@ class DeleteAuthorMutation(graphene.Mutation):
         author.delete()
         return cls(ok=True)
 
+class Object1Input(graphene.InputObjectType):
+	id = graphene.ID()
+	name = graphene.String()
+
 class AuthorsInput(graphene.InputObjectType):
 	id = graphene.ID()
 	name = graphene.String(required=True)
 	last_name = graphene.String()
+	# object1 = graphene.Field(Object1Input)
 
 class UpsertBookMutation(graphene.Mutation):
 	class Arguments:
@@ -83,40 +115,49 @@ class UpsertBookMutation(graphene.Mutation):
 
 	# The class attributes define the response of the mutation
 	book = graphene.Field(BookType)
+	status = graphene.String()
+	#ok = graphene.Boolean()
 
 	@classmethod
 	def mutate(cls, root, info, **kwargs):
+
+		print('info:',dir(info.context))
+		print('headers:',info.context.headers)
+
 		l_authors = []
 		if 'authors' in kwargs:
-			authors = kwargs['authors']
+			authors = kwargs.pop('authors')
 			for author in authors:
 				aux = None
 				if 'id' in author:
-					aux = Author.objects.get(pk=author['id'])
-					aux.name = author['name']
-					aux.last_name = author['last_name']
-					aux.save()
+					try:
+						aux = Author.objects.get(pk=author['id'])
+						aux.name = author['name']
+						aux.last_name = author['last_name']
+						aux.save()
+					except Author.DoesNotExist:
+						return cls( status = 'Author not found', book = None)
 				else:
 					aux = Author.objects.create(name=author['name'], last_name=author['last_name'])
 					aux.save()
 				l_authors.append(aux)
-
-		#kwargs['authors'] = l_authors
-		#print('KWARGS:',kwargs)
-		kwargs.pop('authors')
+		
 		if 'id' in kwargs:
-			book = Book.objects.get(pk=kwargs['id'])
-			book.name = kwargs['name']
-			book.pages = kwargs['pages']
-			book.price = kwargs['price']
-			if 'publish_year' in kwargs:
-				book.publish_year = kwargs['publish_year']
-			if 'created_at' in kwargs:
-				book.created_at = kwargs['created_at']
-			if 'updated_at' in kwargs:
-				book.updated_at = kwargs['updated_at']
-			#book.authors = l_authors
-			book.save()
+			book = None
+			try:
+				book = Book.objects.get(pk=kwargs['id'])
+				book.name = kwargs['name']
+				book.pages = kwargs['pages']
+				book.price = kwargs['price']
+				if 'publish_year' in kwargs:
+					book.publish_year = kwargs['publish_year']
+				if 'created_at' in kwargs:
+					book.created_at = kwargs['created_at']
+				if 'updated_at' in kwargs:
+					book.updated_at = kwargs['updated_at']
+				book.save()
+			except Book.DoesNotExist:
+				return cls( book = None, status = 'Book not found')
 		else:
 			book = Book.objects.create(**kwargs)
 			book.save()
@@ -124,15 +165,10 @@ class UpsertBookMutation(graphene.Mutation):
 				books_authors = BooksAuthors.objects.create(book=book, author=author)
 				books_authors.save()
 		# Notice we return an instance of this mutation
-		return UpsertBookMutation(book = book)
+		return UpsertBookMutation(book = book, status = 'ok')
 
-class Query(BookQuery, graphene.ObjectType):
-	pass
-
-class Mutation(graphene.ObjectType):
+class BookMutation(graphene.ObjectType):
+	# LIBRARY MUTATIONS
 	upsert_author = UpsertAuthorMutation.Field()
 	delete_author = DeleteAuthorMutation.Field()
 	upsert_book = UpsertBookMutation.Field()
-	#update_book = BookMutation.Field()
-
-schema = graphene.Schema(query=Query, mutation=Mutation)
