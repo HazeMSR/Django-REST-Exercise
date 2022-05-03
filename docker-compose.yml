@@ -1,41 +1,56 @@
 version: '3'
 services:
-  # DON'T FORGET TO CHANGE THE XX WITH YOUR PORT
-  # YOUR_USER WITH YOUR UNIX USER
-  postgres_db:
+  postgres_db44:
     image: postgres:14-alpine
-    container_name: "postgresXX"
+    container_name: "postgres${PORT}"
     environment:
-      - "POSTGRES_PASSWORD=YourUltraSecretPassword123"
-      - "POSTGRES_DB=YOUR_USER_db"
-      - "POSTGRES_USER=YOUR_USER"
+      - "POSTGRES_PASSWORD=${PSQL_PASS}"
+      - "POSTGRES_DB=${PSQL_DB}"
+      - "POSTGRES_USER=${PSQL_USER}"
     ports:
-      - "100XX:55XX"
+      - "100${PORT}:55${PORT}"
     volumes:
-      - "/home/YOUR_USER/postgres:/usr/src/postgres"
+      - "${POSTGRES_VOLUME_PATH}:/usr/src/postgres"
     networks:
       - our-library-net
-    command: -p 55XX
+    command: "-p 55${PORT}"
 
-  web:
+  redis_service44:
+    image: redis:7-alpine
+    container_name: "redis${PORT}"
+    environment:
+      - "SOME_REDIS_ENV=whatever"
+    command: "--port 63${PORT}"
+    ports:
+      - "120${PORT}:63${PORT}"
+    volumes: 
+      - "${REDIS_VOLUME_PATH}:/usr/local/etc/redis"
+    networks:
+      - our-library-net
+
+  web44:
     build: .
-    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:80XX"
-    container_name: "djangoXX"
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:80${PORT}"
+    container_name: "django${PORT}"
     depends_on: 
-      - postgres_db
+      - postgres_db44
+      - redis_service44
     environment:
-      - "PSQL_DBNAME=YOUR_USER_db"
-      - "PSQL_USERNAME=YOUR_USER"
-      - "PSQL_PASS=SecretPassword123"
-      - "PSQL_HOST=172.24.0.5" # You must use the command of the README.md file in order to get this IP address
-      - "PSQL_PORT=55XX"
+      - "PSQL_DBNAME=${PSQL_DB}"
+      - "PSQL_USERNAME=${PSQL_USER}"
+      - "PSQL_PASS=${PSQL_PASS}"
+      - "PSQL_HOST=postgres_db${PORT}" # You must use the previous command in order to get this HOST
+      - "PSQL_PORT=55${PORT}"
+      - "JWT_TOKEN_TIME=${JWT_TOKEN_TIME}"
+      - "REDIS_HOST=redis_service${PORT}"
+      - "REDIS_PORT=63${PORT}"
     volumes:
-      - "YOUR_REPOSITORY_PATH:/usr/src/django/library"
+    # "RUTA/DEL/SERVIDOR:RUTA/DENTRO/DEL/CONTENEDOR"
+      - "${DJANGO_VOLUME_PATH}:/usr/src/django/library"
     ports:
-      - "90XX:80XX"
+      - "90${PORT}:80${PORT}"
     networks:
       - our-library-net
-
 networks:
   our-library-net:
     external: true

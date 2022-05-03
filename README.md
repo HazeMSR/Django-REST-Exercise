@@ -1,3 +1,4 @@
+[![Build Status](https://app.travis-ci.com/HazeMSR/Django-REST-Exercise.svg?branch=pytest)](https://app.travis-ci.com/HazeMSR/Django-REST-Exercise)
 # Django-and-Django-REST-Framework
 
 ## Setup

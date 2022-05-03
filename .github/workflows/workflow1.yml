@@ -1,0 +1,27 @@
+name: Deploying docker containers of django and postgres
+
+on:
+    workflow_call:
+    workflow_dispatch:
+    push:
+       branches: [main, pytest]
+    pull_request:
+        branches: [main, pytest]
+jobs:
+  simple_build:
+    runs-on: ubuntu-latest
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: pytest # Checkout with pytest branch
+      - name: Create docker network
+        run: |
+          docker network create -d bridge our-library-net
+      - name: Build django image
+        run: |
+          docker build -t my-django-image44:2.0.0 .
+      - name: Run docker containers
+        run: |
+          docker-compose --env-file .env.stg up --build
