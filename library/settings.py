@@ -19,10 +19,12 @@ from django.contrib.auth import get_user_model
 def my_authentication(request, **kwargs):
     from graphql_jwt.utils import get_payload, get_user_by_payload
 
+    user = None
     # JWT VALIDATION
-    token=request.COOKIES['JWT']
-    payload = get_payload(token, request)
-    user = get_user_by_payload(payload)
+    if 'JWT' in request.cookies:
+        token=request.COOKIES['JWT']
+        payload = get_payload(token, request)
+        user = get_user_by_payload(payload)
 
     if 'username' in kwargs:
         user = get_user_model().objects.get(username=kwargs['username'])
