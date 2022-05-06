@@ -1,0 +1,22 @@
+language: ruby
+env:
+  DOCKER_COMPOSE_VERSION: 1.29.2
+  VERSION-NAME: "$(lsb_release -c)"
+
+services:
+  - docker
+
+before_install:
+  - sudo apt-get update
+  # Some configuration ir order to force docker compose install
+  - y=$(echo $VERSION-NAME | awk '{print $2}')
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+  - docker-compose --version
+  - docker network create -d bridge our-library-net
+  - docker build -t my-django-image44:2.0.0 .
+
+script:
+  - docker-compose --env-file .env.stg up -d postgres_db44 && docker-compose --env-file .env.stg up -d web44
